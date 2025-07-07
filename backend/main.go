@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/gin-contrib/cors"
 
-	"github.com/SamuelJacobsenB/projeto-dentista/config"
-	"github.com/SamuelJacobsenB/projeto-dentista/db"
-	"github.com/SamuelJacobsenB/projeto-dentista/router"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/config"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/db"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/router"
 )
 
 func main() {

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/SamuelJacobsenB/projeto-dentista/entities"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/entities"
 )
 
 type UserDTO struct {

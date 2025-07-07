@@ -2,15 +2,14 @@ package request
 
 import (
 	"errors"
-	"strconv"
 	"strings"
 )
 
 type PatientDTO struct {
 	Name    string `json:"name"`
 	Email   string `json:"email"`
-	Cpf     int    `json:"cpf"`
-	Phone   int    `json:"phone"`
+	Cpf     string `json:"cpf"`
+	Phone   string `json:"phone"`
 	Address string `json:"address"`
 }
 
@@ -31,11 +30,11 @@ func (patientDTO *PatientDTO) Validate() error {
 		return errors.New("email inválido")
 	}
 
-	if len(strconv.Itoa(patientDTO.Cpf)) != 11 {
+	if len(patientDTO.Cpf) != 11 {
 		return errors.New("cpf inválido, deve ter 11 dígitos")
 	}
 
-	if len(strconv.Itoa(patientDTO.Phone)) != 10 {
+	if len(patientDTO.Phone) != 10 {
 		return errors.New("telefone inválido, deve ter 10 dígitos")
 	}
 

@@ -1,4 +1,4 @@
-module github.com/SamuelJacobsenB/projeto-dentista
+module github.com/SamuelJacobsenB/projeto-dentista/backend
 
 go 1.24.4
 

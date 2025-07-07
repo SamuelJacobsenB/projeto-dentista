@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 
-	"github.com/SamuelJacobsenB/projeto-dentista/config"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

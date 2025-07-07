@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 
-	"github.com/SamuelJacobsenB/projeto-dentista/entities"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/entities"
 )
 
 func Migrate() {
