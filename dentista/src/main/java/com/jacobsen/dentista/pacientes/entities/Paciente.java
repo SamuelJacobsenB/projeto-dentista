@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.br.CPF;
 
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class Paciente {
 
     @CPF(message = "Cpf inválido")
     @NotNull(message = "Cpf é obrigatório")
+    @Column(unique = true)
     private String cpf;
 
     @Pattern(regexp = "\\d{10,11}", message = "Telefone deve ter entre 10 e 11 dígitos")
@@ -42,7 +44,12 @@ public class Paciente {
     @NotNull(message = "Data de nascimento inválida")
     private LocalDate dateOfBirth;
 
-    public Paciente() {}
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDate createdAt;
+
+    public Paciente() {
+    }
 
     public Paciente(String name, String cpf, Long cellphone, @Nullable String email, LocalDate dateOfBirth) {
         this.name = name;
@@ -53,6 +60,6 @@ public class Paciente {
     }
 
     public ResponsePacienteDTO toResponseDTO() {
-        return new ResponsePacienteDTO(id, name, cpf, cellphone, email, dateOfBirth);
+        return new ResponsePacienteDTO(id, name, cpf, cellphone, email, dateOfBirth, createdAt);
     }
 }
