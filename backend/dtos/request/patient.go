@@ -1,0 +1,47 @@
+package request
+
+import (
+	"errors"
+	"strconv"
+	"strings"
+)
+
+type PatientDTO struct {
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Cpf     int    `json:"cpf"`
+	Phone   int    `json:"phone"`
+	Address string `json:"address"`
+}
+
+func (patientDTO *PatientDTO) Validate() error {
+	patientDTO.Name = strings.TrimSpace(patientDTO.Name)
+	patientDTO.Email = strings.TrimSpace(patientDTO.Email)
+	patientDTO.Address = strings.TrimSpace(patientDTO.Address)
+
+	if patientDTO.Name == "" {
+		return errors.New("nome é obrigatório")
+	}
+
+	if patientDTO.Email == "" {
+		return errors.New("email é obrigatório")
+	}
+
+	if strings.Contains(patientDTO.Email, " ") || !strings.Contains(patientDTO.Email, "@") {
+		return errors.New("email inválido")
+	}
+
+	if len(strconv.Itoa(patientDTO.Cpf)) != 11 {
+		return errors.New("cpf inválido, deve ter 11 dígitos")
+	}
+
+	if len(strconv.Itoa(patientDTO.Phone)) != 10 {
+		return errors.New("telefone inválido, deve ter 10 dígitos")
+	}
+
+	if patientDTO.Address == "" {
+		return errors.New("endereço é obrigatório")
+	}
+
+	return nil
+}
