@@ -9,6 +9,10 @@ type UserRepository struct {
 	db *gorm.DB
 }
 
+func NewUserRepository(db *gorm.DB) *UserRepository {
+	return &UserRepository{db}
+}
+
 func (repo *UserRepository) FindByID(id uint) (*entities.User, error) {
 	var user entities.User
 

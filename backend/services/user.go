@@ -9,6 +9,10 @@ type UserService struct {
 	repo *repositories.UserRepository
 }
 
+func NewUserService(repo *repositories.UserRepository) *UserService {
+	return &UserService{repo}
+}
+
 func (service *UserService) FindByID(id uint) (*entities.User, error) {
 	user, err := service.repo.FindByID(id)
 
