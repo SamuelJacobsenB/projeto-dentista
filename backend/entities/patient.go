@@ -18,8 +18,8 @@ type Patient struct {
 	UpdatedAt time.Time `json:"updated_at" gorm:"not null"`
 }
 
-func (patient *Patient) toResponseDTO() response.PatientDTO {
-	return response.PatientDTO{
+func (patient *Patient) ToResponseDTO() *response.PatientDTO {
+	return &response.PatientDTO{
 		ID:        patient.ID,
 		Name:      patient.Name,
 		Email:     patient.Email,

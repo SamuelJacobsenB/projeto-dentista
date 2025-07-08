@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/entities"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/types"
 )
 
 type UserDTO struct {
@@ -54,5 +55,6 @@ func (userDTO *UserDTO) ToEntity() *entities.User {
 		Name:     userDTO.Name,
 		Email:    userDTO.Email,
 		Password: userDTO.Password,
+		Roles:    []types.Role{types.RoleUser},
 	}
 }

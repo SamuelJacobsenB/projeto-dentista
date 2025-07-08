@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/entities"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/types"
 	"gorm.io/gorm"
 )
 
@@ -42,7 +43,7 @@ func (repo *UserRepository) Create(user *entities.User) error {
 }
 
 func (repo *UserRepository) Promote(id uint) error {
-	if err := repo.db.Model(&entities.User{}).Where("id = ?", id).Update("roles", []string{"user, admin"}).Error; err != nil {
+	if err := repo.db.Model(&entities.User{}).Where("id = ?", id).Update("roles", []types.Role{types.RoleUser, types.RoleAdmin}).Error; err != nil {
 		return err
 	}
 

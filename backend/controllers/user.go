@@ -35,7 +35,9 @@ func (controller *UserController) FindByID(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusFound, user)
+	responseUser := user.ToResponseDTO()
+
+	ctx.JSON(http.StatusFound, responseUser)
 }
 
 func (controller *UserController) FindByEmail(ctx *gin.Context) {
@@ -48,7 +50,9 @@ func (controller *UserController) FindByEmail(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusFound, user)
+	responseUser := user.ToResponseDTO()
+
+	ctx.JSON(http.StatusFound, responseUser)
 }
 
 func (controller *UserController) Create(ctx *gin.Context) {
@@ -73,7 +77,49 @@ func (controller *UserController) Create(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, user)
+	responseUser := user.ToResponseDTO()
+
+	ctx.JSON(http.StatusCreated, responseUser)
 }
 
-func (controller *UserController) Promote(ctx *gin.Context) {}
+func (controller *UserController) Promote(ctx *gin.Context) {
+	strId := ctx.Param("id")
+	intId, err := strconv.Atoi(strId)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Id do usuário inválido"})
+		return
+	}
+
+	id := uint(intId)
+
+	err = controller.service.Promote(id)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao promover usuário"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Usuário promovido com sucesso"})
+}
+
+func (controller *UserController) Delete(ctx *gin.Context) {
+	strId := ctx.Param("id")
+	intId, err := strconv.Atoi(strId)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Id do usuário inválido"})
+		return
+	}
+
+	id := uint(intId)
+
+	err = controller.service.Delete(id)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao deletar usuário"})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "Usuário deletado com sucesso"})
+}

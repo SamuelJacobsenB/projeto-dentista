@@ -3,6 +3,8 @@ package request
 import (
 	"errors"
 	"strings"
+
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/entities"
 )
 
 type PatientDTO struct {
@@ -43,4 +45,14 @@ func (patientDTO *PatientDTO) Validate() error {
 	}
 
 	return nil
+}
+
+func (patientDTO *PatientDTO) ToEntity() *entities.Patient {
+	return &entities.Patient{
+		Name:    patientDTO.Name,
+		Email:   patientDTO.Email,
+		Cpf:     patientDTO.Cpf,
+		Phone:   patientDTO.Phone,
+		Address: patientDTO.Address,
+	}
 }

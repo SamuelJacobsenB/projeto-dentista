@@ -5,10 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterUserRoutes(routerGroup *gin.RouterGroup, controller *controllers.UserController) {
+func RegisterPatientRoutes(routerGroup *gin.RouterGroup, controller *controllers.PatientController) {
+	routerGroup.GET("/", controller.FindPagenedByName)
 	routerGroup.GET("/:id", controller.FindByID)
-	routerGroup.GET("/email/:email", controller.FindByEmail)
 	routerGroup.POST("/", controller.Create)
-	routerGroup.PATCH("/:id", controller.Promote)
+	routerGroup.PATCH("/:id", controller.Update)
 	routerGroup.DELETE("/:id", controller.Delete)
 }
