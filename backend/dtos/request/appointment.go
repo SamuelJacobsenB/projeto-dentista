@@ -29,6 +29,10 @@ func (appointmentDTO *AppointmentDTO) Validate() error {
 		return errors.New("nome do atendente deve ter no máximo 50 caracteres")
 	}
 
+	if len(appointmentDTO.Description) > 300 {
+		return errors.New("descrição deve ter no máximo 300 caracteres")
+	}
+
 	if appointmentDTO.StartTime.IsZero() {
 		return errors.New("horário de início é obrigatório")
 	}
@@ -43,6 +47,25 @@ func (appointmentDTO *AppointmentDTO) Validate() error {
 
 	if appointmentDTO.PatientID == 0 {
 		return errors.New("id do paciente é obrigatório")
+	}
+
+	return nil
+}
+
+func (appointmentDTO *AppointmentDTO) ValidateUpdateDTO() error {
+	appointmentDTO.Attendant = strings.TrimSpace(appointmentDTO.Attendant)
+	appointmentDTO.Description = strings.TrimSpace(appointmentDTO.Description)
+
+	if appointmentDTO.Attendant != "" && len(appointmentDTO.Attendant) > 50 {
+		return errors.New("nome do atendente deve ter no máximo 50 caracteres")
+	}
+
+	if appointmentDTO.Description != "" && len(appointmentDTO.Description) > 300 {
+		return errors.New("descrição deve ter no máximo 300 caracteres")
+	}
+
+	if !appointmentDTO.StartTime.IsZero() && appointmentDTO.EndTime.IsZero() && appointmentDTO.StartTime.After(appointmentDTO.EndTime) {
+		return errors.New("horário de início não pode ser posterior ao horário de término")
 	}
 
 	return nil
