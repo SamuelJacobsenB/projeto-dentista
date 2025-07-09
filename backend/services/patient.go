@@ -1,8 +1,14 @@
 package services
 
 import (
+	"errors"
+	"mime/multipart"
+	"path/filepath"
+	"strings"
+
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/entities"
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/repositories"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/utils"
 )
 
 type PatientService struct {
@@ -41,8 +47,31 @@ func (service *PatientService) Create(patient *entities.Patient) error {
 	return nil
 }
 
-func (service *PatientService) Update(patient *entities.Patient) error {
-	if err := service.repo.Update(patient); err != nil {
+func (service *PatientService) Update(patient *entities.Patient, id uint) error {
+	if err := service.repo.Update(patient, id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (service *PatientService) UploadImage(profileImage *multipart.FileHeader, id uint) error {
+	imageExtension := strings.TrimPrefix(filepath.Ext(profileImage.Filename), ".")
+
+	if err := utils.ValidImageExtension(imageExtension); err != nil {
+		return err
+	}
+
+	const maxSize = 3 * 1024 * 1024
+	if profileImage.Size > int64(maxSize) {
+		return errors.New("imagem deve ter no máximo 3MB")
+	}
+
+	if _, err := service.repo.FindByID(id); err != nil {
+		return errors.New("paciente não encontrado")
+	}
+
+	if err := service.repo.UploadImage(imageExtension, id); err != nil {
 		return err
 	}
 

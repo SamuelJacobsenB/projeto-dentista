@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"errors"
+
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/entities"
 	"gorm.io/gorm"
 )
@@ -41,8 +43,29 @@ func (repo *PatientRepository) Create(patient *entities.Patient) error {
 	return nil
 }
 
-func (repo *PatientRepository) Update(patient *entities.Patient) error {
-	if err := repo.db.Save(patient).Error; err != nil {
+func (repo *PatientRepository) Update(patient *entities.Patient, id uint) error {
+	existing, err := repo.FindByID(id)
+	if err != nil {
+		return errors.New("paciente não encontrado")
+	}
+
+	if err := repo.db.Model(&existing).Updates(patient).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *PatientRepository) UploadImage(imageExtension string, id uint) error {
+	var patient entities.Patient
+
+	if err := repo.db.First(&patient, id).Error; err != nil {
+		return err
+	}
+
+	patient.ImageExtension = imageExtension
+
+	if err := repo.db.Save(&patient).Error; err != nil {
 		return err
 	}
 
