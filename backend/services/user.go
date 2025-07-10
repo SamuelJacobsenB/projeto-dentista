@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/entities"
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/repositories"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/utils"
 )
 
 type UserService struct {
@@ -34,6 +35,13 @@ func (service *UserService) FindByEmail(email string) (*entities.User, error) {
 }
 
 func (service *UserService) Create(user *entities.User) error {
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return err
+	}
+
+	user.Password = hashedPassword
+
 	if err := service.repo.Create(user); err != nil {
 		return err
 	}

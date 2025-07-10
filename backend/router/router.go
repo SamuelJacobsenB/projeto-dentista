@@ -9,11 +9,19 @@ import (
 func SetupRoter() *gin.Engine {
 	router := gin.Default()
 
+	router.Static("/uploads/patients", "./uploads/patients")
+
+	api := router.Group("/api")
+	v1 := api.Group("/v1")
+
 	userController := bootstrap.InitUserModule(db.DB)
-	RegisterUserRoutes(router.Group("/users"), userController)
+	RegisterUserRoutes(v1.Group("/users"), userController)
 
 	patientController := bootstrap.InitPatientModule(db.DB)
-	RegisterPatientRoutes(router.Group("/patients"), patientController)
+	RegisterPatientRoutes(v1.Group("/patients"), patientController)
+
+	appointmentController := bootstrap.InitAppointmentModule(db.DB)
+	RegisterAppointmentRoutes(v1.Group("/appointments"), appointmentController)
 
 	return router
 }

@@ -10,7 +10,5 @@ import (
 func InitPatientModule(db *gorm.DB) *controllers.PatientController {
 	repo := repositories.NewPatientRepository(db)
 	service := services.NewPatientService(repo)
-	controller := controllers.NewPatientController(service)
-
-	return controller
+	return controllers.NewPatientController(service)
 }

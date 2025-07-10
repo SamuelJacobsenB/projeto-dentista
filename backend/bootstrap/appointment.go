@@ -7,8 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitUserModule(db *gorm.DB) *controllers.UserController {
-	repo := repositories.NewUserRepository(db)
-	service := services.NewUserService(repo)
-	return controllers.NewUserController(service)
+func InitAppointmentModule(db *gorm.DB) *controllers.AppointmentController {
+	repo := repositories.NewAppointmentRepository(db)
+	service := services.NewAppointmentService(repo)
+	return controllers.NewAppointmentController(service)
 }
