@@ -33,5 +33,7 @@ func SetupRoter() *gin.Engine {
 	appointmentGroup.Use(middlewares.AuthMiddleware(nil))
 	RegisterAppointmentRoutes(appointmentGroup, appointmentController)
 
+	bootstrap.InitScheduler(db.DB)
+
 	return router
 }

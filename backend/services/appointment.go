@@ -1,8 +1,11 @@
 package services
 
 import (
+	"fmt"
+
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/entities"
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/repositories"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/utils"
 )
 
 type AppointmentService struct {
@@ -50,6 +53,36 @@ func (service *AppointmentService) Create(appointment *entities.Appointment) err
 
 func (service *AppointmentService) Update(appointment *entities.Appointment, id uint) error {
 	if err := service.repository.Update(appointment, id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (service *AppointmentService) SendReminderEmail() error {
+	appointments, err := service.FindOfToday()
+	if err != nil {
+		return err
+	}
+
+	for _, appointment := range appointments {
+		if !appointment.Reminder {
+			if err := utils.SendEmail(appointment.Patient.Email, "Lembrete de consulta", utils.GenerateBodyText(appointment.StartTime, appointment.EndTime)); err != nil {
+				fmt.Printf("houve um erro ao enviar um email para %s", appointment.Patient.Email)
+				continue
+			} else {
+				if err := service.repository.UpdateReminder(appointment.ID); err != nil {
+					fmt.Printf("houve um erro ao autalizar o campo de lembrete no banco de dados para a consulto de id: %d", appointment.ID)
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
+func (service *AppointmentService) DeleteExpired() error {
+	if err := service.repository.DeleteExpired(); err != nil {
 		return err
 	}
 

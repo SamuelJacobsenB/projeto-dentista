@@ -30,7 +30,7 @@ func (repo *AppointmentRepository) FindOfToday() ([]entities.Appointment, error)
 	end := start.Add(24 * time.Hour)
 
 	var appointments []entities.Appointment
-	if err := repo.db.Where("start_time >= ? AND start_time < ?", start, end).Find(&appointments).Error; err != nil {
+	if err := repo.db.Preload("Patient").Where("start_time >= ? AND start_time < ?", start, end).Find(&appointments).Error; err != nil {
 		return nil, err
 	}
 
@@ -62,6 +62,31 @@ func (repo *AppointmentRepository) Update(appointment *entities.Appointment, id 
 	}
 
 	if err := repo.db.Model(&existing).Updates(appointment).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *AppointmentRepository) UpdateReminder(id uint) error {
+	existing, err := repo.FindByID(id)
+	if err != nil {
+		return err
+	}
+
+	existing.Reminder = true
+
+	if err := repo.db.Save(existing).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *AppointmentRepository) DeleteExpired() error {
+	now := time.Now()
+
+	if err := repo.db.Where("end_time < ?", now).Delete(&[]entities.Appointment{}).Error; err != nil {
 		return err
 	}
 
