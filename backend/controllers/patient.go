@@ -76,7 +76,7 @@ func (controller *PatientController) Create(ctx *gin.Context) {
 	var patientDTO request.PatientDTO
 
 	if err := ctx.ShouldBindJSON(&patientDTO); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "dados inválidos"})
 		return
 	}
 
@@ -88,7 +88,7 @@ func (controller *PatientController) Create(ctx *gin.Context) {
 	patient := patientDTO.ToEntity()
 
 	if err := controller.service.Create(patient); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar paciente"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao criar paciente"})
 		return
 	}
 
@@ -101,14 +101,14 @@ func (controller *PatientController) Update(ctx *gin.Context) {
 	strId := ctx.Param("id")
 	intId, err := strconv.Atoi(strId)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "id inválido"})
 		return
 	}
 
 	var patientDTO request.PatientDTO
 
 	if err := ctx.ShouldBindJSON(&patientDTO); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "dados inválidos"})
 		return
 	}
 
@@ -120,7 +120,7 @@ func (controller *PatientController) Update(ctx *gin.Context) {
 	patient := patientDTO.ToEntity()
 
 	if err := controller.service.Update(patient, uint(intId)); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao atualizar paciente"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao atualizar paciente"})
 		return
 	}
 
@@ -134,24 +134,24 @@ func (controller *PatientController) UploadImage(ctx *gin.Context) {
 	id, err := strconv.Atoi(strId)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "id inválido"})
 		return
 	}
 
 	profileImage, err := ctx.FormFile("profile_image")
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Erro ao obter arquivo de imagem"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "erro ao obter arquivo de imagem"})
 		return
 	}
 
 	if err := controller.service.UploadImage(profileImage, uint(id)); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao fazer upload da imagem"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao fazer upload da imagem"})
 		return
 	}
 
 	dsn := fmt.Sprintf("uploads/patients/%s%s", strId, filepath.Ext(profileImage.Filename))
 	if err := ctx.SaveUploadedFile(profileImage, dsn); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao salvar arquivo de imagem"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao salvar arquivo de imagem"})
 		return
 	}
 
@@ -163,12 +163,12 @@ func (controller *PatientController) Delete(ctx *gin.Context) {
 	id, err := strconv.Atoi(idStr)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "id inválido"})
 		return
 	}
 
 	if err := controller.service.Delete(uint(id)); err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao deletar paciente"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "erro ao deletar paciente"})
 		return
 	}
 

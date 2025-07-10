@@ -66,6 +66,8 @@ func AuthMiddleware(roles []types.Role) gin.HandlerFunc {
 			ctx.Set("user_id", uint(userID))
 		}
 
+		ctx.Set("user_roles", userRoles)
+
 		ctx.Next()
 	}
 }

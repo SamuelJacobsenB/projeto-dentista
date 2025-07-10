@@ -20,16 +20,41 @@ func NewUserController(service *services.UserService) *UserController {
 func (controller *UserController) FindByID(ctx *gin.Context) {
 	strId := ctx.Param("id")
 	intId, err := strconv.Atoi(strId)
-
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Id do usuário inválido"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "id do usuário inválido"})
 		return
 	}
 
-	id := uint(intId)
+	requestedID := uint(intId)
 
-	user, err := controller.service.FindByID(id)
+	userIDValue, exists := ctx.Get("user_id")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "usuário não autenticado"})
+		return
+	}
+	userID := userIDValue.(uint)
 
+	rolesValue, exists := ctx.Get("user_roles")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "cargos não encontrados"})
+		return
+	}
+	userRoles := rolesValue.([]string)
+
+	isAdmin := false
+	for _, role := range userRoles {
+		if role == "admin" {
+			isAdmin = true
+			break
+		}
+	}
+
+	if !isAdmin && userID != requestedID {
+		ctx.JSON(http.StatusForbidden, gin.H{"error": "acesso negado"})
+		return
+	}
+
+	user, err := controller.service.FindByID(requestedID)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado"})
 		return
@@ -37,22 +62,7 @@ func (controller *UserController) FindByID(ctx *gin.Context) {
 
 	responseUser := user.ToResponseDTO()
 
-	ctx.JSON(http.StatusFound, responseUser)
-}
-
-func (controller *UserController) FindByEmail(ctx *gin.Context) {
-	email := ctx.Param("email")
-
-	user, err := controller.service.FindByEmail(email)
-
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado"})
-		return
-	}
-
-	responseUser := user.ToResponseDTO()
-
-	ctx.JSON(http.StatusFound, responseUser)
+	ctx.JSON(http.StatusOK, responseUser)
 }
 
 func (controller *UserController) Create(ctx *gin.Context) {

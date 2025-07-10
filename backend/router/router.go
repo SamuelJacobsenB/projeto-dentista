@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/bootstrap"
 	"github.com/SamuelJacobsenB/projeto-dentista/backend/db"
+	"github.com/SamuelJacobsenB/projeto-dentista/backend/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,14 +15,23 @@ func SetupRoter() *gin.Engine {
 	api := router.Group("/api")
 	v1 := api.Group("/v1")
 
+	authController := bootstrap.InitAuthModule(db.DB)
+	RegisterAuthRoutes(v1.Group("/auth"), authController)
+
 	userController := bootstrap.InitUserModule(db.DB)
-	RegisterUserRoutes(v1.Group("/users"), userController)
+	userGroup := v1.Group("/users")
+	userGroup.Use(middlewares.AuthMiddleware(nil))
+	RegisterUserRoutes(userGroup, userController)
 
 	patientController := bootstrap.InitPatientModule(db.DB)
-	RegisterPatientRoutes(v1.Group("/patients"), patientController)
+	patientGroup := v1.Group("/patients")
+	patientGroup.Use(middlewares.AuthMiddleware(nil))
+	RegisterPatientRoutes(patientGroup, patientController)
 
 	appointmentController := bootstrap.InitAppointmentModule(db.DB)
-	RegisterAppointmentRoutes(v1.Group("/appointments"), appointmentController)
+	appointmentGroup := v1.Group("/appointments")
+	appointmentGroup.Use(middlewares.AuthMiddleware(nil))
+	RegisterAppointmentRoutes(appointmentGroup, appointmentController)
 
 	return router
 }
