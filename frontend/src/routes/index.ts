@@ -1,9 +1,22 @@
 import type { RouteType } from "../types";
 
 export const routes: RouteType[] = [
-  { path: "/", label: "Dashboard" },
-  { path: "/login", label: "Login" },
-  { path: "/agenda", label: "Agenda" },
-  { path: "/pacientes", label: "Pacientes" },
-  { path: "/dentistas", label: "Dentistas" },
+  {label: "Pacientes", icon: "patient", 
+    subroutes: [
+      {label: "Listagem", path: "/patients"},
+      {label: "Novo", path: "/patients/new"}
+    ]
+  },
+  {label: "Calendário", icon: "calendar", 
+    subroutes: [
+      {label: "Visualizar", path: "/calendar"},
+      {label: "Nova Consulta", path: "/calendar/new"}
+    ]
+  },
+  {label: "Usuários", icon: "user", adminOnly: true, 
+    subroutes: [
+      {label: "Visualizar", path: "/users"},
+      {label: "Novo usuário", path: "/users/new"}
+    ]
+  }
 ];
